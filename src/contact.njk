@@ -1,0 +1,23 @@
+---
+layout: layouts/base.njk
+title: تماس
+permalink: /contact/
+---
+<h1>فرم تماس / درخواست</h1>
+
+{# این فرم فعلاً فقط اسکلت است و به هیچ Backend واقعی وصل نیست.
+   اتصال به Netlify Function و SMS.ir در مرحله‌ی بعد (خارج از همین
+   اسکلت‌سازی) انجام می‌شود. #}
+<form class="contact-form">
+  <label>نام<input type="text" name="first_name" required></label>
+  <label>نام خانوادگی<input type="text" name="last_name" required></label>
+  <label>شماره تماس<input type="tel" name="mobile" required></label>
+  <label>ایمیل (اختیاری)<input type="email" name="email"></label>
+  <label>نوع درخواست
+    <select name="request_type">
+      <option value="service">خدمت تخصصی</option>
+      <option value="free_software">نرم‌افزار رایگان</option>
+    </select>
+  </label>
+  <button type="submit" disabled>ارسال (غیرفعال تا مرحله‌ی اتصال Backend)</button>
+</form>

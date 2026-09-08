@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} | آکادمی لیان</title>
+
+  {# TODO (مرحله‌ی Design System): لینک واقعی فونت Vazirmatn اینجا اضافه می‌شود،
+     همان‌طور که در پروژه‌ی Asphalt Reporter استفاده شده بود. #}
+  <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+  {% include "partials/header.njk" %}
+
+  <main>
+    {{ content | safe }}
+  </main>
+
+  {% include "partials/footer.njk" %}
+</body>
+</html>

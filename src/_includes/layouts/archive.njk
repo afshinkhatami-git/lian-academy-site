@@ -1,0 +1,18 @@
+---
+layout: layouts/base.njk
+---
+<section class="archive-page">
+  <header class="archive-page__header">
+    <h1>{{ title }}</h1>
+    {% if intro %}<p>{{ intro }}</p>{% endif %}
+  </header>
+
+  <ul class="archive-page__list">
+    {% for item in collections[collectionKey] %}
+      <li>
+        <a href="{{ item.url }}">{{ item.data.title }}</a>
+        {% if item.data.date %}<time>{{ item.data.date | readableDate }}</time>{% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</section>

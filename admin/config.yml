@@ -1,0 +1,265 @@
+# =====================================================================
+# Decap CMS — پیکربندی آکادمی لیان
+# محل قرارگیری این فایل در پروژه: admin/config.yml
+# =====================================================================
+#
+# سه مورد در این فایل «جایگزین‌شدنی» (placeholder) هستند و به تصمیم‌های
+# باز پروژه بستگی دارند؛ با علامت TODO مشخص شده‌اند:
+#   ۱. backend.repo        → بعد از ساخت مخزن واقعی گیت‌هاب
+#   ۲. backend.base_url    → آدرس OAuth Proxy (چون Git Gateway منسوخ شده،
+#                            دیگر Netlify این را رایگان و آماده نمی‌دهد؛
+#                            باید طبق تصمیم قبلی، یک پروکسی سبک جدا دیپلوی شود)
+#   ۳. media_folder/public_folder → بر اساس ساختار پوشه‌ی واقعی پروژه‌ی
+#                            Eleventy (هنوز نهایی نشده). مقدار فعلی فقط
+#                            یک قرارداد رایج و منطقی است.
+#
+# نکته درباره‌ی زبان فیلدها: نام فیلدها (name) عمداً انگلیسی و ساده
+# نوشته شده‌اند چون این‌ها همان کلیدهایی هستند که در قالب‌های Eleventy
+# استفاده می‌شوند و اکثر آموزش‌های Eleventy با نام‌های انگلیسی نوشته
+# شده‌اند. برچسب‌ها (label) که تو در پنل CMS می‌بینی، کاملاً فارسی‌اند.
+#
+# نکته درباره‌ی زبان پنل مدیریت: مقدار locale زیر رابط کاربری Decap را
+# فارسی می‌کند، اما علاوه بر این خط، باید در فایل admin/index.html هم
+# پکیج locale فارسی (fa) را import و register کنی؛ این یک قدم جدا در
+# مرحله‌ی پیاده‌سازی است، نه بخشی از همین config.yml.
+# =====================================================================
+
+backend:
+  name: github
+  repo: your-org/lian-academy-site   # TODO: نام واقعی مخزن
+  branch: main
+  base_url: https://your-oauth-proxy.example.com   # TODO: آدرس OAuth Proxy
+  auth_endpoint: auth
+
+publish_mode: editorial_workflow   # Draft → Preview → Publish (طبق تصمیم قبلی پروژه)
+
+media_folder: "src/assets/uploads"   # TODO: هماهنگ با ساختار نهایی Eleventy
+public_folder: "/assets/uploads"
+
+locale: "fa"
+
+# =====================================================================
+# مقاله (Article)
+# =====================================================================
+collections:
+  - name: "articles"
+    label: "مقالات"
+    label_singular: "مقاله"
+    folder: "src/content/articles"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "عنوان", name: title, widget: string}
+      - {label: "خلاصه", name: summary, widget: text}
+      - {label: "تصویر شاخص", name: cover, widget: image}
+      - {label: "متن مقاله", name: body, widget: markdown}
+      - label: "دسته‌بندی"
+        name: category
+        widget: select
+        options:
+          - "مواد، مصالح و طرح مخلوط"
+          - "تولید و کنترل کیفیت کارخانه"
+          - "اجرا، راه و عیب‌یابی روسازی"
+          - "استانداردها و مراجع فنی"
+      - &tags_field
+        label: "برچسب‌ها"
+        name: tags
+        widget: list
+        required: false
+        default: []
+      - label: "منابع و مراجع"
+        name: references
+        widget: list
+        required: false
+        field: {label: "منبع", name: item, widget: string}
+      - label: "فایل‌های ضمیمه"
+        name: attachments
+        widget: list
+        required: false
+        field: {label: "فایل", name: file, widget: file}
+      - {label: "تاریخ انتشار", name: date, widget: datetime}
+      - &related_service_field
+        label: "خدمت مرتبط (اختیاری)"
+        name: related_service
+        widget: relation
+        collection: "services"
+        search_fields: ["title"]
+        value_field: "{{slug}}"
+        display_fields: ["title"]
+        required: false
+        hint: "در صورت انتخاب، انتهای این محتوا یک باکس دعوت‌به‌عمل به سمت این خدمت نمایش داده می‌شود."
+
+  # ===================================================================
+  # کلیپ کوتاه (Short Clip)
+  # ===================================================================
+  - name: "short_clips"
+    label: "کلیپ‌های کوتاه"
+    label_singular: "کلیپ کوتاه"
+    folder: "src/content/short-clips"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "عنوان", name: title, widget: string}
+      - {label: "توضیح کوتاه", name: short_description, widget: text}
+      - {label: "تصویر/کاور", name: cover, widget: image}
+      - label: "لینک/امبد آپارات"
+        name: video_url
+        widget: string
+        hint: "ترجیحاً آدرس کامل ویدئو در آپارات"
+      - {label: "تاریخ", name: date, widget: datetime}
+      - *tags_field
+      - label: "لینک یوتیوب/شبکه‌های اجتماعی (اختیاری)"
+        name: social_links
+        widget: list
+        required: false
+      - *related_service_field
+
+  # ===================================================================
+  # ویدئوی بلند (Long Video)
+  # ===================================================================
+  - name: "long_videos"
+    label: "ویدئوهای بلند"
+    label_singular: "ویدئوی بلند"
+    folder: "src/content/long-videos"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "عنوان", name: title, widget: string}
+      - {label: "توضیح", name: description, widget: text}
+      - {label: "کاور", name: cover, widget: image}
+      - {label: "ویدئوی آپارات", name: video_url, widget: string}
+      - {label: "متن تکمیلی", name: body, widget: markdown, required: false}
+      - label: "منابع"
+        name: references
+        widget: list
+        required: false
+        field: {label: "منبع", name: item, widget: string}
+      - label: "فایل‌های مرتبط"
+        name: related_files
+        widget: list
+        required: false
+        field: {label: "فایل", name: file, widget: file}
+      - *tags_field
+      - label: "نقش ویدئو (اختیاری)"
+        name: role
+        widget: select
+        required: false
+        options: ["مستقل", "تکمیل کلیپ کوتاه", "مقدمه‌ی دوره"]
+      - {label: "تاریخ", name: date, widget: datetime}
+      - *related_service_field
+
+  # ===================================================================
+  # دوره (Course) — طبق مدل نهایی‌شده: هویت / محتوا / اعتمادسازی / تجاری / محتوای مرتبط / انتشار
+  # ===================================================================
+  - name: "courses"
+    label: "دوره‌ها"
+    label_singular: "دوره"
+    folder: "src/content/courses"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      # --- هویت ---
+      - {label: "عنوان دوره", name: title, widget: string}
+      - {label: "معرفی کوتاه", name: short_intro, widget: text}
+      - {label: "کاور", name: cover, widget: image}
+      # --- محتوا ---
+      - {label: "توضیح کامل", name: full_description, widget: markdown}
+      - label: "سرفصل‌ها"
+        name: curriculum
+        widget: list
+        required: false
+        field: {label: "سرفصل", name: item, widget: string}
+      # --- اعتمادسازی ---
+      - {label: "مخاطب دوره", name: audience, widget: text, required: false}
+      - label: "جلسات/مدت"
+        name: duration_sessions
+        widget: string
+        required: false
+        hint: 'مثلاً: «۶ جلسه، ۴ ساعت»'
+      - {label: "مدرس/ارائه‌دهنده", name: instructor, widget: string, default: "آکادمی لیان"}
+      # --- تجاری ---
+      - label: "وضعیت"
+        name: is_free
+        widget: select
+        options: ["رایگان", "پولی"]
+      - &cta_field
+        label: "دکمه‌ی فراخوان به عمل (CTA)"
+        name: cta
+        widget: object
+        fields:
+          - {label: "متن دکمه", name: button_text, widget: string, default: "درخواست اطلاعات"}
+          - label: "نوع مقصد"
+            name: action_type
+            widget: select
+            options: ["فرم درخواست", "لینک خارجی"]
+            default: "فرم درخواست"
+          - label: "لینک/مسیر مقصد"
+            name: destination
+            widget: string
+            required: false
+            hint: "فقط برای «لینک خارجی» پر شود؛ برای «فرم درخواست» خالی بگذارید."
+      # --- محتوای مرتبط ---
+      - label: "نمونه‌ی رایگان (کلیپ کوتاه)"
+        name: free_sample_clip
+        widget: relation
+        collection: "short_clips"
+        search_fields: ["title"]
+        value_field: "{{slug}}"
+        display_fields: ["title"]
+        required: false
+      - label: "نمونه‌ی رایگان (ویدئوی بلند)"
+        name: free_sample_video
+        widget: relation
+        collection: "long_videos"
+        search_fields: ["title"]
+        value_field: "{{slug}}"
+        display_fields: ["title"]
+        required: false
+        hint: "توضیح فنی: چون Decap در یک فیلد relation فقط به یک Collection وصل می‌شود، دو فیلد جدا برای دو نوع نمونه‌ی رایگان گذاشته شده — هرکدام مرتبط بود را پر کن."
+      - label: "فایل‌های همراه"
+        name: attachments
+        widget: list
+        required: false
+        field: {label: "فایل", name: file, widget: file}
+      # --- انتشار ---
+      - *tags_field
+      - {label: "تاریخ", name: date, widget: datetime}
+
+  # ===================================================================
+  # خدمات تخصصی (Specialized Services)
+  # ===================================================================
+  - name: "services"
+    label: "خدمات تخصصی"
+    label_singular: "خدمت تخصصی"
+    folder: "src/content/services"
+    create: true
+    slug: "{{slug}}"
+    fields:
+      - {label: "عنوان", name: title, widget: string}
+      - {label: "توضیح", name: description, widget: markdown}
+      - label: "دسته"
+        name: category
+        widget: select
+        options: ["بهینه‌سازی کارخانه", "نرم‌افزارها"]
+      - label: "نوع نرم‌افزار (فقط اگر دسته = نرم‌افزارها)"
+        name: software_type
+        widget: select
+        required: false
+        options: ["رایگان", "سفارشی"]
+      - *tags_field
+      - {label: "تاریخ", name: date, widget: datetime}
+      - *cta_field
+
+  # ===================================================================
+  # تنظیمات سایت — جای‌نگه‌دار برای بعد (منو/فوتر/شبکه‌های اجتماعی/SEO)
+  # این بخش عمداً هنوز کامل نشده چون فیلدهای دقیقش تصمیم‌گیری‌نشده باقی مانده.
+  # ===================================================================
+  - name: "site_settings"
+    label: "تنظیمات سایت"
+    files:
+      - label: "اطلاعات پایه"
+        name: "general"
+        file: "src/content/settings/general.json"
+        fields:
+          - {label: "نام سایت", name: site_name, widget: string, default: "آکادمی لیان"}
+          # TODO: فیلدهای منو، فوتر، شبکه‌های اجتماعی، SEO — بعداً تکمیل شود

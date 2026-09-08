@@ -1,0 +1,6 @@
+{
+  "layout": "layouts/content.njk",
+  "eleventyComputed": {
+    "permalink": "/knowledge/{{ page.fileSlug }}/"
+  }
+}

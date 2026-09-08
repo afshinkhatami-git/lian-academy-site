@@ -1,0 +1,8 @@
+{# این Partial فقط زمانی چیزی نمایش می‌دهد که فیلد related_service در
+   فرانت‌متر محتوا پر شده باشد (طبق تصمیم: Content → Service، تک‌جهته) #}
+{% if related_service %}
+  <aside class="related-service-box">
+    <p>اگر درگیر این موضوع در کارخانه هستید...</p>
+    <a href="/services/{{ related_service }}/">مشاهده خدمت مرتبط</a>
+  </aside>
+{% endif %}

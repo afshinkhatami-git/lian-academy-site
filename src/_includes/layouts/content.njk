@@ -1,0 +1,57 @@
+---
+layout: layouts/base.njk
+---
+<article class="content-page">
+
+  <header class="content-page__header">
+    <h1>{{ title }}</h1>
+    {% if date %}
+      <time datetime="{{ date | htmlDateString }}">{{ date | readableDate }}</time>
+    {% endif %}
+  </header>
+
+  {% if cover %}
+    <img class="content-page__cover" src="{{ cover }}" alt="{{ title }}">
+  {% endif %}
+
+  {# رسانه: هرکدام از این فیلدها که در فرانت‌متر محتوا موجود باشد نمایش داده می‌شود #}
+  {% if video_url %}
+    <div class="content-page__media">
+      <a href="{{ video_url }}">مشاهده ویدئو</a>
+    </div>
+  {% endif %}
+
+  <div class="content-page__body">
+    {# سه فیلد مختلف در Collectionهای مختلف نقش «متن اصلی» را دارند:
+       body (مقاله/ویدئوی بلند) → همان content فایل
+       full_description (دوره) و description (خدمت) → رشته‌ی Markdown در frontmatter #}
+    {% if full_description %}
+      {{ full_description | markdown | safe }}
+    {% elif description %}
+      {{ description | markdown | safe }}
+    {% elif short_description %}
+      <p>{{ short_description }}</p>
+    {% else %}
+      {{ content | safe }}
+    {% endif %}
+  </div>
+
+  {# اطلاعات تکمیلی: فیلدهایی که فقط در بعضی از انواع محتوا وجود دارند #}
+  {% if references and references.length %}
+    <section class="content-page__references">
+      <h2>منابع و مراجع</h2>
+      <ul>
+        {% for item in references %}<li>{{ item.item }}</li>{% endfor %}
+      </ul>
+    </section>
+  {% endif %}
+
+  {% if tags and tags.length %}
+    <ul class="content-page__tags">
+      {% for tag in tags %}<li>{{ tag }}</li>{% endfor %}
+    </ul>
+  {% endif %}
+
+  {% include "partials/related-service-box.njk" %}
+
+</article>
