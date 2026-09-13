@@ -32,6 +32,7 @@ module.exports = function (eleventyConfig) {
   // پوشه‌ی admin (باندل Decap CMS) عیناً کپی می‌شود؛ Eleventy نباید
   // فایل‌های آن را به‌عنوان قالب تفسیر کند.
   eleventyConfig.addPassthroughCopy({ admin: "admin" });
+  eleventyConfig.addPassthroughCopy({ "src/robots.txt": "robots.txt" });
 
   // ---------------------------------------------------------------
   // Collections — هر پوشه‌ی محتوا دقیقاً همان مسیری‌ست که در
